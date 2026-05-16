@@ -1,0 +1,51 @@
+---
+const items = [
+  'מעוצב במיוחד עבורכם',
+  'הזמנות אישיות',
+  'קינוחים לכל אירוע',
+  'עוגות יום הולדת',
+  'מארזי מתנה',
+];
+const doubled = [...items, ...items];
+---
+
+<div class="ribbon-outer" aria-hidden="true">
+  <div class="ribbon-track">
+    {doubled.map((item, i) => (
+      <>
+        <span>{item}</span>
+        {i < doubled.length - 1 && <span class="dot">·</span>}
+      </>
+    ))}
+  </div>
+</div>
+
+<style>
+  .ribbon-outer {
+    background: linear-gradient(135deg, var(--rose-dark) 0%, var(--rose-deep) 60%, var(--rose-dark) 100%);
+    overflow: hidden;
+    position: relative;
+    z-index: 5;
+    padding: 0.7rem 0;
+  }
+
+  .ribbon-track {
+    display: flex;
+    gap: 2.2rem;
+    white-space: nowrap;
+    color: #fff;
+    font-family: 'Assistant', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    animation: marquee 20s linear infinite;
+    width: max-content;
+  }
+
+  .ribbon-track .dot { color: rgba(255,255,255,0.45); }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+</style>

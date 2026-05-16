@@ -1,0 +1,134 @@
+---
+---
+
+<div class="lightbox photo-lightbox" id="photoLightbox" role="dialog" aria-modal="true">
+  <div class="lightbox-backdrop" id="photoBackdrop"></div>
+  <div class="photo-lightbox-panel">
+    <button class="lightbox-close" id="photoClose" aria-label="סגרו">✕</button>
+    <button class="photo-nav photo-prev" id="photoPrev" aria-label="הקודם">›</button>
+    <button class="photo-nav photo-next" id="photoNext" aria-label="הבא">‹</button>
+    <div class="photo-lightbox-img-wrap">
+      <img id="photoLightboxImg" src="" alt="" class="photo-lightbox-img" />
+    </div>
+    <p class="photo-lightbox-caption" id="photoLightboxCaption"></p>
+  </div>
+</div>
+
+<script>
+  const photoLightbox = document.getElementById('photoLightbox')!;
+  const photoImg      = document.getElementById('photoLightboxImg') as HTMLImageElement;
+  const photoCaption  = document.getElementById('photoLightboxCaption')!;
+  const photoClose    = document.getElementById('photoClose')!;
+  const photoBackdrop = document.getElementById('photoBackdrop')!;
+  const photoPrev     = document.getElementById('photoPrev')!;
+  const photoNext     = document.getElementById('photoNext')!;
+
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('.photo-card'));
+  let currentPhoto = 0;
+
+  function showPhoto(index: number) {
+    currentPhoto = (index + cards.length) % cards.length;
+    const card = cards[currentPhoto];
+    const src = card.dataset.src ?? card.querySelector<HTMLImageElement>('.photo-img')!.src;
+    const alt = card.dataset.alt ?? '';
+    photoImg.src = src;
+    photoImg.alt = alt;
+    photoCaption.textContent = alt;
+    photoLightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePhoto() {
+    photoLightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  cards.forEach((card, i) => {
+    card.addEventListener('click', () => showPhoto(i));
+    card.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); showPhoto(i); }
+    });
+  });
+
+  photoClose.addEventListener('click', closePhoto);
+  photoBackdrop.addEventListener('click', closePhoto);
+  photoPrev.addEventListener('click', (e: MouseEvent) => { e.stopPropagation(); showPhoto(currentPhoto - 1); });
+  photoNext.addEventListener('click', (e: MouseEvent) => { e.stopPropagation(); showPhoto(currentPhoto + 1); });
+
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (!photoLightbox.classList.contains('open')) return;
+    if (e.key === 'ArrowLeft')  showPhoto(currentPhoto - 1);
+    if (e.key === 'ArrowRight') showPhoto(currentPhoto + 1);
+    if (e.key === 'Escape')     closePhoto();
+  });
+</script>
+
+<style>
+  .photo-lightbox-panel {
+    position: relative;
+    z-index: 1;
+    max-width: min(860px, 96vw);
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: scale(0.88) translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .photo-lightbox.open .photo-lightbox-panel { transform: scale(1) translateY(0); }
+
+  .photo-lightbox-img-wrap {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.45);
+    max-height: 80vh;
+    display: flex;
+  }
+
+  .photo-lightbox-img {
+    max-width: min(860px, 92vw);
+    max-height: 80vh;
+    object-fit: contain;
+    display: block;
+    border-radius: 16px;
+  }
+
+  .photo-lightbox-caption {
+    margin-top: 0.8rem;
+    color: rgba(255,255,255,0.8);
+    font-family: 'Assistant', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+  }
+
+  .photo-nav {
+    position: absolute;
+    top: 40%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: white;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 3px; /* optical centering of › ‹ glyphs */
+    transition: background 0.2s, transform 0.2s;
+    z-index: 2;
+  }
+  .photo-nav:hover { background: rgba(255,255,255,0.3); transform: translateY(-50%) scale(1.1); }
+  .photo-prev { right: calc(100% + 12px); }
+  .photo-next { left: calc(100% + 12px); }
+
+  @media (max-width: 700px) {
+    .photo-prev { right: auto; left: 6px; top: auto; bottom: -56px; transform: none; }
+    .photo-next { left: auto; right: 6px; top: auto; bottom: -56px; transform: none; }
+    .photo-nav:hover { transform: scale(1.1); }
+  }
+</style>

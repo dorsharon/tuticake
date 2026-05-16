@@ -1,0 +1,152 @@
+---
+import { Image } from 'astro:assets';
+import menuImg from '../assets/menu.jpg';
+---
+
+<section class="menu-section">
+  <div class="menu-content reveal">
+    <p class="menu-eyebrow">המחירים שלנו</p>
+    <h2 class="menu-title">תפריט</h2>
+    <p class="menu-sub">עוגות מעוצבות, מארזי קינוחים ועוד</p>
+    <button class="menu-btn" id="menuOpenBtn" aria-label="פתחו את התפריט">
+      <span class="menu-btn-icon">🎂</span>
+      לצפייה בתפריט המלא
+      <svg class="menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </button>
+  </div>
+</section>
+
+<!-- Menu Lightbox -->
+<div class="lightbox" id="menuLightbox" role="dialog" aria-modal="true" aria-label="תפריט מחירים">
+  <div class="lightbox-backdrop" id="menuBackdrop"></div>
+  <div class="lightbox-panel">
+    <button class="lightbox-close" id="menuClose" aria-label="סגרו">✕</button>
+    <div class="menu-lightbox-img-wrap">
+      <Image
+        src={menuImg}
+        alt="תפריט מחירים תותי קייק"
+        class="menu-lightbox-img"
+        width={680}
+        format="webp"
+        quality={85}
+      />
+    </div>
+  </div>
+</div>
+
+<script>
+  const lightbox = document.getElementById('menuLightbox')!;
+  const openBtn  = document.getElementById('menuOpenBtn')!;
+  const closeBtn = document.getElementById('menuClose')!;
+  const backdrop = document.getElementById('menuBackdrop')!;
+
+  function openLightbox() {
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    closeBtn.focus();
+  }
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+    openBtn.focus();
+  }
+
+  openBtn.addEventListener('click', openLightbox);
+  closeBtn.addEventListener('click', closeLightbox);
+  backdrop.addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+  });
+</script>
+
+<style>
+  .menu-section {
+    position: relative;
+    z-index: 5;
+    padding: 5rem 1.5rem 5.5rem;
+    background: linear-gradient(160deg, var(--cream) 0%, var(--blush-light) 100%);
+    text-align: center;
+  }
+
+  .menu-content { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
+
+  .menu-eyebrow {
+    font-family: 'Assistant', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--rose-mid);
+    text-transform: uppercase;
+  }
+
+  .menu-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 7vw, 3.8rem);
+    font-weight: 900;
+    color: var(--choco);
+    line-height: 1;
+    display: inline-block;
+  }
+  .menu-title::after {
+    content: '';
+    display: block;
+    width: 60%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--rose-dark), transparent);
+    margin: 0.4rem auto 0;
+    border-radius: 2px;
+  }
+
+  .menu-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--rose-dark);
+    margin-bottom: 0.8rem;
+  }
+
+  .menu-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: 0.6rem;
+    background: linear-gradient(135deg, var(--rose-dark) 0%, var(--rose-deep) 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 1rem 2.4rem;
+    border-radius: 50px;
+    font-family: 'Assistant', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.03em;
+    box-shadow: 0 8px 30px rgba(176,48,96,0.3);
+    transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  }
+  .menu-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 18px 44px rgba(176,48,96,0.42);
+  }
+  .menu-btn-icon { font-size: 1.2rem; }
+  .menu-arrow { width: 18px; height: 18px; }
+
+  /* Menu lightbox panel */
+  .lightbox-panel {
+    position: relative;
+    z-index: 1;
+    max-width: min(680px, 96vw);
+    width: 100%;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 32px 80px rgba(92,42,42,0.35);
+    overflow: hidden;
+    transform: scale(0.88) translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .lightbox.open .lightbox-panel { transform: scale(1) translateY(0); }
+
+  .menu-lightbox-img-wrap { overflow-y: auto; max-height: 88vh; }
+  .menu-lightbox-img { width: 100%; display: block; }
+</style>
