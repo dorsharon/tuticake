@@ -3,12 +3,14 @@
 
 <div class="lightbox photo-lightbox" id="photoLightbox" role="dialog" aria-modal="true" aria-label="תמונה מוגדלת מהגלריה">
   <div class="lightbox-backdrop" id="photoBackdrop"></div>
-  <div class="photo-lightbox-panel">
-    <button class="lightbox-close" id="photoClose" aria-label="סגרו">✕</button>
+  <div class="photo-lightbox-panel" id="photoPanel">
     <button class="photo-nav photo-prev" id="photoPrev" aria-label="הקודם">›</button>
     <button class="photo-nav photo-next" id="photoNext" aria-label="הבא">‹</button>
-    <div class="photo-lightbox-img-wrap">
-      <img id="photoLightboxImg" src="" alt="" class="photo-lightbox-img" />
+    <div class="photo-swipe-wrap">
+      <button class="lightbox-close" id="photoClose" aria-label="סגרו">✕</button>
+      <div class="photo-lightbox-img-wrap">
+        <img id="photoLightboxImg" src="" alt="" class="photo-lightbox-img" />
+      </div>
     </div>
     <p class="photo-lightbox-caption" id="photoLightboxCaption"></p>
     <a
@@ -68,15 +70,78 @@
 
   photoClose.addEventListener('click', closePhoto);
   photoBackdrop.addEventListener('click', closePhoto);
-  photoPrev.addEventListener('click', (e: MouseEvent) => { e.stopPropagation(); showPhoto(currentPhoto - 1); });
-  photoNext.addEventListener('click', (e: MouseEvent) => { e.stopPropagation(); showPhoto(currentPhoto + 1); });
+  photoPrev.addEventListener('click', (e: MouseEvent) => { e.stopPropagation(); navigate(-1); });
+  photoNext.addEventListener('click', (e: MouseEvent) => { e.stopPropagation(); navigate(1); });
 
   document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (!photoLightbox.classList.contains('open')) return;
-    if (e.key === 'ArrowLeft')  showPhoto(currentPhoto - 1);
-    if (e.key === 'ArrowRight') showPhoto(currentPhoto + 1);
+    if (e.key === 'ArrowLeft')  navigate(-1);
+    if (e.key === 'ArrowRight') navigate(1);
     if (e.key === 'Escape')     closePhoto();
   });
+
+  // ── Swipe / navigate with animation ──
+  const panel   = document.getElementById('photoPanel')!;
+  const swipeWrap = document.querySelector<HTMLElement>('.photo-swipe-wrap')!;
+
+  function navigate(dir: 1 | -1) {
+    const W = swipeWrap.offsetWidth;
+    swipeWrap.style.transition = 'transform 0.22s ease-in';
+    swipeWrap.style.transform  = `translateX(${-dir * W}px)`;
+    swipeWrap.addEventListener('transitionend', () => {
+      swipeWrap.style.transition = 'none';
+      swipeWrap.style.transform  = `translateX(${dir * W}px)`;
+      showPhoto(currentPhoto + dir);
+      swipeWrap.getBoundingClientRect();
+      swipeWrap.style.transition = 'transform 0.28s cubic-bezier(0.25, 1, 0.5, 1)';
+      swipeWrap.style.transform  = 'translateX(0)';
+    }, { once: true });
+  }
+
+  // Touch
+  let touchStartX = 0;
+  let dragging = false;
+
+  panel.addEventListener('touchstart', (e: TouchEvent) => {
+    touchStartX = e.touches[0].clientX;
+    dragging = true;
+    swipeWrap.style.transition = 'none';
+  }, { passive: true });
+
+  panel.addEventListener('touchmove', (e: TouchEvent) => {
+    if (!dragging) return;
+    e.preventDefault();
+    const dx = e.touches[0].clientX - touchStartX;
+    swipeWrap.style.transform = `translateX(${dx}px)`;
+  }, { passive: false });
+
+  panel.addEventListener('touchend', (e: TouchEvent) => {
+    if (!dragging) return;
+    dragging = false;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const W  = swipeWrap.offsetWidth;
+
+    if (Math.abs(dx) >= W * 0.25) {
+      // Commit: fly out then bring in new image
+      const flyOut = dx < 0 ? -W : W;
+      swipeWrap.style.transition = 'transform 0.22s ease-in';
+      swipeWrap.style.transform  = `translateX(${flyOut}px)`;
+      swipeWrap.addEventListener('transitionend', () => {
+        const flyIn = dx < 0 ? W : -W;
+        swipeWrap.style.transition = 'none';
+        swipeWrap.style.transform  = `translateX(${flyIn}px)`;
+        if (dx < 0) showPhoto(currentPhoto + 1);
+        else        showPhoto(currentPhoto - 1);
+        swipeWrap.getBoundingClientRect();
+        swipeWrap.style.transition = 'transform 0.28s cubic-bezier(0.25, 1, 0.5, 1)';
+        swipeWrap.style.transform  = 'translateX(0)';
+      }, { once: true });
+    } else {
+      // Snap back
+      swipeWrap.style.transition = 'transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
+      swipeWrap.style.transform  = 'translateX(0)';
+    }
+  }, { passive: true });
 </script>
 
 <style>
@@ -90,13 +155,21 @@
     align-items: center;
     transform: scale(0.88) translateY(20px);
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow: hidden;
+    touch-action: pan-y;
   }
   .photo-lightbox.open .photo-lightbox-panel { transform: scale(1) translateY(0); }
+
+  .photo-swipe-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
   .photo-lightbox-img-wrap {
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 32px 80px rgba(0,0,0,0.45);
     max-height: 80vh;
     display: flex;
   }
