@@ -5,7 +5,8 @@ import { defineConfig, fontProviders } from 'astro/config';
 export default defineConfig({
     fonts: [{
         provider: fontProviders.fontsource(),
-        name: "Playpen Sans Hebrew",
+        name: "Gveret Levin",
         cssVariable: "--font-body",
+        subsets: ["hebrew", "latin"],
       }]
 });
