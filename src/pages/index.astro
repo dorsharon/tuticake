@@ -35,9 +35,6 @@ import { Font } from "astro:assets";
   <meta name="theme-color" content="#d4607e" />
 
   <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
   <Font cssVariable="--font-body" />
 
   <!-- Structured data -->
@@ -68,25 +65,27 @@ import { Font } from "astro:assets";
   <Footer />
 
   <script>
-    // Floating petals
-    const container = document.getElementById('petalContainer');
-    const emojis = ['🌸', '✿', '🍓', '❀', '🌺'];
-    function spawnPetal() {
-      const el = document.createElement('span');
-      el.className = 'petal';
-      el.style.cssText = `
-        left:${Math.random() * 100}vw;
-        font-size:${Math.random() * 14 + 10}px;
-        animation-duration:${Math.random() * 10 + 7}s;
-        animation-delay:${Math.random() * 3}s;
-        opacity:${Math.random() * 0.35 + 0.08};
-      `;
-      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-      container?.appendChild(el);
-      el.addEventListener('animationend', () => el.remove());
-    }
-    for (let i = 0; i < 10; i++) setTimeout(spawnPetal, i * 300);
-    setInterval(spawnPetal, 700);
+    // Floating petals — deferred until after load to avoid competing with FCP/LCP
+    window.addEventListener('load', () => {
+      const container = document.getElementById('petalContainer');
+      const emojis = ['🌸', '✿', '🍓', '❀', '🌺'];
+      function spawnPetal() {
+        const el = document.createElement('span');
+        el.className = 'petal';
+        el.style.cssText = `
+          left:${Math.random() * 100}vw;
+          font-size:${Math.random() * 14 + 10}px;
+          animation-duration:${Math.random() * 10 + 7}s;
+          animation-delay:${Math.random() * 3}s;
+          opacity:${Math.random() * 0.35 + 0.08};
+        `;
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        container?.appendChild(el);
+        el.addEventListener('animationend', () => el.remove());
+      }
+      for (let i = 0; i < 10; i++) setTimeout(spawnPetal, i * 300);
+      setInterval(spawnPetal, 700);
+    });
 
     // Scroll reveal
     const io = new IntersectionObserver(entries => {
