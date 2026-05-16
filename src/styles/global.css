@@ -16,7 +16,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Assistant', sans-serif;
+  font-family: var(--font-body);
   background: var(--cream);
   color: var(--choco);
   overflow-x: hidden;
