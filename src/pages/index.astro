@@ -14,23 +14,57 @@ import { Font } from "astro:assets";
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="תותי קייק - עוגות מעוצבות וקינוחים בהזמנה אישית" />
-  <title>תותי קייק | עוגות מעוצבות וקינוחים</title>
+  <meta name="description" content="תותי קייק - עוגות יום הולדת מעוצבות, מארזי קינוחים ומתנות בהזמנה אישית. נשמח לבנות יחד את העוגה המושלמת לאירוע שלכם!" />
+  <title>תותי קייק | עוגות מעוצבות וקינוחים בהזמנה</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="he_IL" />
+  <meta property="og:title" content="תותי קייק | עוגות מעוצבות וקינוחים בהזמנה" />
+  <meta property="og:description" content="עוגות יום הולדת מעוצבות, מארזי קינוחים ומתנות בהזמנה אישית." />
+  <meta property="og:image" content="/og-image.jpg" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="תותי קייק | עוגות מעוצבות וקינוחים בהזמנה" />
+  <meta name="twitter:description" content="עוגות יום הולדת מעוצבות, מארזי קינוחים ומתנות בהזמנה אישית." />
+  <meta name="twitter:image" content="/og-image.jpg" />
+
+  <!-- Theme color for mobile browsers -->
+  <meta name="theme-color" content="#d4607e" />
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
   <Font cssVariable="--font-body" />
+
+  <!-- Structured data -->
+  <script type="application/ld+json" is:inline>
+  {
+    "@context": "https://schema.org",
+    "@type": "Bakery",
+    "name": "תותי קייק",
+    "description": "עוגות יום הולדת מעוצבות, מארזי קינוחים ומתנות בהזמנה אישית",
+    "telephone": "+972546629179",
+    "sameAs": ["https://www.instagram.com/tuti_cake/"],
+    "priceRange": "₪₪"
+  }
+  </script>
 </head>
 <body>
 
-  <div class="petal-container" id="petalContainer"></div>
+  <div class="petal-container" id="petalContainer" aria-hidden="true"></div>
 
   <Header />
-  <Ribbon />
-  <Gallery />
-  <PhotoLightbox />
-  <Menu />
-  <Contact />
+  <main>
+    <Ribbon />
+    <Gallery />
+    <PhotoLightbox />
+    <Menu />
+    <Contact />
+  </main>
   <Footer />
 
   <script>
