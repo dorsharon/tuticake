@@ -18,6 +18,15 @@ import { Font } from "astro:assets";
   <title>תותי קייק | עוגות מעוצבות וקינוחים בהזמנה</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
+  <!-- Google Analytics -->
+  <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-0D7QCLWYE5"></script>
+  <script is:inline>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-0D7QCLWYE5');
+  </script>
+
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="he_IL" />
