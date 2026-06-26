@@ -23,13 +23,13 @@ import { Font } from "astro:assets";
   <meta property="og:locale" content="he_IL" />
   <meta property="og:title" content="תותי קייק | עוגות מעוצבות וקינוחים בהזמנה" />
   <meta property="og:description" content="עוגות יום הולדת מעוצבות, מארזי קינוחים ומתנות בהזמנה אישית." />
-  <meta property="og:image" content="/og-image.jpg" />
+  <meta property="og:image" content="https://tuticake.com/og-image.jpg" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="תותי קייק | עוגות מעוצבות וקינוחים בהזמנה" />
   <meta name="twitter:description" content="עוגות יום הולדת מעוצבות, מארזי קינוחים ומתנות בהזמנה אישית." />
-  <meta name="twitter:image" content="/og-image.jpg" />
+  <meta name="twitter:image" content="https://tuticake.com/og-image.jpg" />
 
   <!-- Theme color for mobile browsers -->
   <meta name="theme-color" content="#d4607e" />
@@ -46,7 +46,53 @@ import { Font } from "astro:assets";
     "description": "עוגות יום הולדת מעוצבות, מארזי קינוחים ומתנות בהזמנה אישית",
     "telephone": "+972546629179",
     "sameAs": ["https://www.instagram.com/tuti_cake/"],
-    "priceRange": "₪₪"
+    "priceRange": "₪₪",
+    "areaServed": "מרכז הארץ",
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
+        "opens": "09:00",
+        "closes": "21:00"
+      }
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "bestRating": "5"
+    }
+  }
+  </script>
+  <script type="application/ld+json" is:inline>
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "כמה עולה עוגה מעוצבת?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "המחירים שלנו מתחילים מ-₪200 לעוגות קומה אחת ועולים בהתאם לעיצוב ולגודל. צרו קשר לקבלת הצעת מחיר אישית."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "כמה זמן מראש צריך להזמין?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "מומלץ להזמין לפחות שבוע מראש, במיוחד בסופי שבוע."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "האם אפשר לבקש עיצוב מותאם אישית?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "בהחלט! כל העוגות שלנו מעוצבות בהתאמה אישית מלאה."
+        }
+      }
+    ]
   }
   </script>
 </head>
@@ -63,7 +109,6 @@ import { Font } from "astro:assets";
     <Contact />
   </main>
   <Footer />
-
   <script>
     // Floating petals — deferred until after load to avoid competing with FCP/LCP
     window.addEventListener('load', () => {
